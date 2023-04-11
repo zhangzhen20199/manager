@@ -52,8 +52,10 @@ int main()
 			wm.Del_people();
 			break;
 		case 4:
+			wm.Modified_people();
 			break;
 		case 5:
+			wm.Find_people();
 			break;
 		case 6:
 			break;

@@ -1,5 +1,5 @@
 1 aa 1
 2 oo 2
 4 ww 2
-6 ll 1
+5 zz 1
 7 oo 2

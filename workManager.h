@@ -31,6 +31,8 @@ public:
 
 	void Modified_people();
 
+	void Find_people();
+
 	int get_PeopleNum();
 
 	void saved();

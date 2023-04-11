@@ -267,6 +267,123 @@ void WorkManager::Modified_people()
 	if (this->m_File_is_Empty) {
 		cout << "文件不存在或者为空" <<endl;
 	}
+	else
+	{
+		int Id = 0;
+		cout << "请输入职工编号：" << endl;
+		cin >> Id;
+
+		int ret = this->IsExist(Id);
+		if (ret!=-1)
+		{
+			cout << "该员工查已找到" << endl;
+			delete this->m_worker[ret];
+
+			int id = 0;
+			string newName = "";
+			int newDid = 0;
+
+			cout << "请输入新的id号" << endl;
+			cin >> id;
+			cout << "请输入新的姓名：" << endl;
+			cin >> newName;
+			cout << "请输入岗位：" << endl;
+			cout << "1、员工" << endl;
+			cout << "2、经理" << endl;
+			cout << "3、老板" << endl;
+			cin >> newDid;
+
+			Worker* worker = NULL;
+
+			switch (newDid)
+			{
+			case 1:
+				worker = new Employee(id, newName, newDid);
+				break;
+			case 2:
+				worker = new Manager(id, newName, newDid);
+				break;
+			case 3:
+				worker = new Boss(id, newName, newDid);
+				break;
+			default:
+				break;
+			}
+
+			this->m_worker[ret] = worker;
+
+			this->saved();
+			cout << "人员修改成功" << endl;
+		}
+		else
+		{
+			cout << "查无此人" << endl;
+		}
+
+		system("pause");
+		system("cls");
+	}
+}
+
+void WorkManager::Find_people()
+{
+	if (this->m_File_is_Empty)
+	{
+		cout << "文件不存在或者为空" << endl;
+	}
+	else
+	{
+		cout << "请输入查找方式：" << endl;
+		cout << "1、按照职工编号：" << endl;
+		cout << "2、按照职工姓名：" << endl;
+		int type = 0;
+		cin >> type;
+		if (type==1)
+		{
+			cout << "请输入职工编号：" << endl;
+			int id;
+			cin >> id;
+			int ret = this->IsExist(id);
+
+			if (ret!=-1)
+			{
+				cout << "该职工的信息如下" << endl;
+				this->m_worker[ret]->showInfo();
+			}
+			else
+			{
+				cout << "查无此人" << endl;
+			}
+		}
+		else if(type==2)
+		{
+			bool flags = false;
+			cout << "请输入员工姓名：" << endl;
+			string name;
+			cin >> name;
+
+			for (int i = 0; i < this->m_ArrNum; i++)
+			{
+				if (this->m_worker[i]->m_name == name)
+				{
+					cout << "该员工信息如下：" << endl;
+					this->m_worker[i]->showInfo();
+					flags = true;
+				}
+			}
+
+			if (!flags) {
+				cout << "查无此人" << endl;
+			}
+		}
+		else
+		{
+			cout << "输入方式有误" << endl;
+		}
+
+		system("pause");
+		system("cls");
+	}	
 }
 
 
