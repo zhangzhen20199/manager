@@ -13,11 +13,12 @@ void Employee::showInfo()
 		<< "\t职工姓名：" << this->m_name
 		<< "\t部门：" << this->getDepName()
 		<< "\t岗位职责：完成经理交待的任务" << endl;
+
 }
 
 string Employee::getDepName()
 {
-	return string("员工");
+	return string("员工");   
 }
 
 
