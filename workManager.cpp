@@ -1,0 +1,312 @@
+#include "workManager.h"
+
+WorkManager::WorkManager()
+{
+	ifstream ifs;
+	ifs.open(FILENAME, ios::in);
+
+	if (!ifs.is_open())
+	{	
+		cout << "文件不存在" << endl;
+
+		this->m_ArrNum = 0;
+		this->m_worker = NULL;
+
+		this->m_File_is_Empty = true;
+
+		ifs.close();
+
+		return;
+	}
+
+	char ch;
+	ifs >> ch;
+
+	if (ifs.eof())
+	{
+		cout << "文件为空" << endl;
+
+		this->m_ArrNum = 0;
+		this->m_worker = nullptr;
+		this->m_File_is_Empty = true;
+
+		ifs.close();
+
+		return;
+	}
+
+	int num = this->get_PeopleNum();
+	//cout << "职工人数为：" << num << endl;
+
+	this->m_ArrNum = num;
+	this->m_File_is_Empty = false;
+
+
+	//test code
+	this->m_worker = new Worker*[this->m_ArrNum];
+	this->init_people();
+
+	/*for (size_t i = 0; i < this->m_ArrNum; i++)
+	{
+		cout << "职工编号：" << this->m_worker[i]->m_id
+			<< "姓名：" << this->m_worker[i]->m_name
+			<< "部门编号：" << this->m_worker[i]->m_depid << endl;
+	}*/
+}
+
+int WorkManager::get_PeopleNum()
+{
+	ifstream ifs;
+	ifs.open(FILENAME, ios::in);
+
+	int id;
+	string name;
+	int dId;
+
+	int num=0;
+
+	while (ifs>>id && ifs>>name && ifs>>dId)
+	{
+		num++;
+	}
+
+	return num;
+}
+
+void WorkManager::init_people()
+{
+	ifstream ifs;
+	ifs.open(FILENAME, ios::in);
+
+	int id;
+	string name;
+	int dId;
+	int people_num = 0;
+
+	while (ifs>>id &&ifs>>name &&ifs>>dId)
+	{
+		Worker* worker = nullptr;
+		switch (dId)
+		{
+		case 1:
+			worker = new Employee(id, name, dId);
+			break;
+		case 2:
+			worker = new Manager(id, name, dId);
+			break;
+		case 3:
+			worker = new Boss(id, name, dId);
+			break;
+		default:
+			printf("not find dId\n");
+			break;
+		}
+
+		this->m_worker[people_num] = worker;
+		people_num++;
+	}
+
+	ifs.close();
+
+	people_num++;
+}
+
+void WorkManager::show_people()
+{
+	if (this->m_File_is_Empty)
+	{
+		cout << "当前文件不存在或者为空" << endl;
+	}
+
+	for (int i = 0; i < m_ArrNum; i++)
+	{
+		//利用多态，纯虚函数，不同子类都会重写
+		this->m_worker[i]->showInfo();
+	}
+
+	system("pause");
+	system("clc");
+}
+
+void WorkManager::Show_Menu()
+{
+	cout << "*************************************" << endl;
+	cout << "********欢迎使用职工管理系统！********" << endl;
+	cout << "***********0.退出管理程序************" << endl;
+	cout << "***********1.增加职工信息************" << endl;
+	cout << "***********2.现实职工信息************" << endl;
+	cout << "***********3.删除离职职工************" << endl;
+	cout << "***********4.修改职工信息************" << endl;
+	cout << "***********5.查找职工信息************" << endl;
+	cout << "***********6.按照编号排序************" << endl;
+	cout << "***********7.清空所有文档************" << endl;
+	cout << "*************************************" << endl;
+	cout << endl;
+}
+
+void WorkManager::Exit_system()
+{
+	cout << "welcome" << endl;
+	system("pause");
+	exit(0);
+
+}
+
+void WorkManager::add_People()
+{
+	cout << "请输入添加职工数量：" << endl;
+	int add_Num = 0;
+	cin >> add_Num;
+
+	if (add_Num > 0)
+	{
+		int total_num = 0;
+		total_num = this->m_ArrNum + add_Num;
+		Worker** newSpace = new Worker*[total_num];
+
+		if (this->m_worker != NULL)
+		{
+			for (int i = 0; i < m_ArrNum; i++)
+			{
+				newSpace[i] = this->m_worker[i];
+			}
+		}
+
+		for (int i = 0; i < add_Num; i++)
+		{
+			int id;
+			string name;
+			int dSlect;
+
+			cout << "请输入第" << i + 1 << "个新职工编号：" << endl;
+			cin >> id;
+
+			cout << "请输入第" << i + 1 << "个新职工名字：" << endl;
+			cin >> name;
+
+			cout << "请输入第" << i + 1 << "个新职工岗位：" << endl;
+			cin >> dSlect;
+
+			Worker* people = NULL;
+			switch (dSlect)
+			{
+			case 1:
+				people = new Employee(id, name, 1);
+				break;
+			case 2:
+				people = new Manager(id, name, 2);
+				break;
+			case 3:
+				people = new Boss(id, name, 3);
+				break;
+			default:
+				cout << "输入的岗位有误" << endl;
+				break;
+			}
+
+			newSpace[this->m_ArrNum + i] = people;
+		}
+
+		delete[] this->m_worker;
+
+		this->m_worker = newSpace;
+
+		this->m_ArrNum = total_num;
+
+		this->m_File_is_Empty = false;
+
+		cout << "添加成功" << add_Num << "名新职工" << endl;
+
+		this->saved();
+	}
+	else
+	{
+		cout << "输入有误" << endl;
+	}
+
+	system("pause");
+	system("cls");
+}
+
+void WorkManager::Del_people()
+{
+	if (this->m_File_is_Empty)
+	{
+		cout << "文件不存在或者为空"<<endl;
+	}
+	else
+	{
+		cout << "请输入被删除的员工编号" << endl;
+		int id = 0;
+		cin >> id;
+		int index = this->IsExist(id);
+		if (index==-1)
+		{
+			cout << "该员工不存在" << endl;
+		}
+		else
+		{
+			for (int i = index; i < this->m_ArrNum-1; i++)
+			{
+				this->m_worker[i] = this->m_worker[i + 1];
+			}
+
+			this->m_ArrNum--;
+			this->saved();
+
+			cout << "删除成功" << endl;
+		}
+	}
+
+	system("pause");
+	system("clc");
+}
+
+void WorkManager::Modified_people()
+{
+	if (this->m_File_is_Empty) {
+		cout << "文件不存在或者为空" <<endl;
+	}
+}
+
+
+int WorkManager::IsExist(int id)
+{
+	int index = -1;
+
+	for (int i = 0; i < this->m_ArrNum; i++)
+	{
+		if (this->m_worker[i]->m_id == id)
+		{
+			index = i;
+			break;
+		}
+	}
+
+	return index;
+}
+
+void WorkManager::saved()
+{
+	ofstream ofs;
+	ofs.open(FILENAME, ios::out);
+
+	for (int i = 0; i < this->m_ArrNum; i++)
+	{
+		ofs << this->m_worker[i]->m_id << " "
+			<< this->m_worker[i]->m_name << " "
+			<< this->m_worker[i]->m_depid << endl;
+	}
+
+	ofs.close();
+}
+
+WorkManager::~WorkManager()
+{
+	if (this->m_worker != nullptr)
+	{
+		delete[] this->m_worker;
+		this->m_worker = nullptr;
+ 	}
+
+}
