@@ -33,6 +33,8 @@ public:
 
 	void Find_people();
 
+	void Sort_people();
+
 	int get_PeopleNum();
 
 	void saved();

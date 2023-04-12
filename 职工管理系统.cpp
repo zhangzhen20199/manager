@@ -58,6 +58,7 @@ int main()
 			wm.Find_people();
 			break;
 		case 6:
+			wm.Sort_people();
 			break;
 		case 7:
 			break;

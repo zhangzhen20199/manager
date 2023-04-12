@@ -125,7 +125,7 @@ void WorkManager::show_people()
 	}
 
 	system("pause");
-	system("clc");
+	system("cls");
 }
 
 void WorkManager::Show_Menu()
@@ -259,7 +259,7 @@ void WorkManager::Del_people()
 	}
 
 	system("pause");
-	system("clc");
+	system("cls");
 }
 
 void WorkManager::Modified_people()
@@ -386,6 +386,58 @@ void WorkManager::Find_people()
 	}	
 }
 
+void WorkManager::Sort_people()
+{
+	if (this->m_File_is_Empty)
+	{
+		cout << "文件为空或不存在" << endl;
+		system("pause");
+		system("cls");
+	}
+	else
+	{
+		cout << "请选择工号排序方式：" << endl;
+		cout << "1、升序" << endl;
+		cout << "2、降序" << endl;
+		int type = 0;
+		cin >> type;
+		//选择排序
+		for (int i = 0; i < this->m_ArrNum; i++)
+		{
+			int minOrmax = i;
+			for (int j = i+1; j < this->m_ArrNum; j++)
+			{
+				if (type==1)
+				{
+					if (this->m_worker[minOrmax]->m_id>this->m_worker[j]->m_id)
+					{
+						minOrmax = j;
+					}
+				}
+				else
+				{
+					if (this->m_worker[minOrmax]->m_id<this->m_worker[j]->m_id)
+					{
+						minOrmax = j;
+					}
+				}
+			}
+
+			if (i!=minOrmax)
+			{
+				Worker* tmp = this->m_worker[i];
+				this->m_worker[i] = this->m_worker[minOrmax];
+				this->m_worker[minOrmax] = tmp;
+			}
+
+		}
+
+		cout << "排序成功！排序后的结果为：" << endl;
+
+		this->saved();
+		this->show_people();
+	}
+}
 
 int WorkManager::IsExist(int id)
 {
