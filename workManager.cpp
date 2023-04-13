@@ -134,7 +134,7 @@ void WorkManager::Show_Menu()
 	cout << "********欢迎使用职工管理系统！********" << endl;
 	cout << "***********0.退出管理程序************" << endl;
 	cout << "***********1.增加职工信息************" << endl;
-	cout << "***********2.现实职工信息************" << endl;
+	cout << "***********2.显示职工信息************" << endl;
 	cout << "***********3.删除离职职工************" << endl;
 	cout << "***********4.修改职工信息************" << endl;
 	cout << "***********5.查找职工信息************" << endl;
@@ -439,6 +439,43 @@ void WorkManager::Sort_people()
 	}
 }
 
+void WorkManager::clear_File()
+{
+	cout << "是否删除：" << endl;
+	cout << "1、是：" << endl;
+	cout << "2、否：" << endl;
+
+	int select = 2;
+	cin >> select;
+	if (select==1)
+	{
+		ofstream ofs(FILENAME, ios::trunc);
+		ofs.close();
+
+		if (this->m_worker != nullptr)
+		{
+			for (int i = 0; i < this->m_ArrNum; i++)
+			{
+				if (this->m_worker[i]!= nullptr)
+				{
+					delete this->m_worker[i];
+					this->m_worker[i] = nullptr;
+				}
+			}
+
+			this->m_ArrNum = 0;
+			delete[] this->m_worker;
+			this->m_worker = nullptr;
+			this->m_File_is_Empty = true;
+		}
+
+		cout<<"清空成功！" << endl;
+	}
+
+	system("pause");
+	system("cls");
+}
+
 int WorkManager::IsExist(int id)
 {
 	int index = -1;
@@ -474,6 +511,13 @@ WorkManager::~WorkManager()
 {
 	if (this->m_worker != nullptr)
 	{
+		for (int i = 0; i < this->m_ArrNum; i++)
+		{
+			if (this->m_worker[i] != NULL)
+			{
+				delete this->m_worker[i];
+			}
+		}
 		delete[] this->m_worker;
 		this->m_worker = nullptr;
  	}

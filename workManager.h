@@ -35,6 +35,8 @@ public:
 
 	void Sort_people();
 
+	void clear_File();
+
 	int get_PeopleNum();
 
 	void saved();

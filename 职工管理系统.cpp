@@ -61,6 +61,7 @@ int main()
 			wm.Sort_people();
 			break;
 		case 7:
+			wm.clear_File();
 			break;
 		default:
 			system("cls");
